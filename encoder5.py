@@ -5,7 +5,7 @@ from numpy import array
 np.set_printoptions(threshold=np.inf)
 
 def image_capture():
-    cam = cv.VideoCapture(2) 
+    cam = cv.VideoCapture(3) 
   
     result, image = cam.read() 
     
@@ -24,7 +24,7 @@ def image_capture():
     else: 
         print("No image detected. Please! try again") 
 
-def image_to_matrice(image):
+def image_to_array1d(image):
 
     gray =  cv.cvtColor(image, cv.COLOR_BGR2GRAY)
     array2D = array(gray)
@@ -177,7 +177,7 @@ def main():
     lower_bound = 0  # Adjust the lower bound as needed
     upper_bound = 255 # Adjust the upper bound as needed
     image = image_capture()
-    coeffs = image_to_matrice(image)
+    coeffs = image_to_array1d(image)
 
 
     with open('coeff.txt', 'w') as file:
