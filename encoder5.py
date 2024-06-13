@@ -2,40 +2,52 @@ import numpy as np
 import math
 import cv2 as cv
 from numpy import array
-from PIL import Image as im
 np.set_printoptions(threshold=np.inf)
 
-def image_to_array(image):
+def image_capture():
+    cam = cv.VideoCapture(2) 
+  
+    result, image = cam.read() 
+    
+    croped = image[0:256, 0:256]   
+    
+    if result: 
+    
+        cv.imshow("Croped", croped) 
+    
+        cv.waitKey(0) 
+        cv.destroyWindow("Croped") 
+
+        return croped
+    
+    # If captured image is corrupted, moving to else part 
+    else: 
+        print("No image detected. Please! try again") 
+
+def image_to_matrice(image):
 
     gray =  cv.cvtColor(image, cv.COLOR_BGR2GRAY)
-    array2D = np.array(gray)
-    # flatten_array = array2D.flatten()
-    # cv.imshow('image', image)
-    # cv.imshow('gray', gray)
-    # cv.waitKey(0)
+    array2D = array(gray)
+    flatten_array = array2D.flatten()
+    cv.imshow('image', image)
+    cv.imshow('gray', gray)
+    
+    cv.waitKey(0)
 
-    # image_array = np.array(gray)
+    cv.destroyWindow("image") 
+    cv.destroyWindow("gray") 
+
+    image_array = np.array(gray)
     image_array = array2D.flatten()
-    np.save('array_coeffs.npy', image_array)
-    # print(image_array)
-    # # image reconstruction before
-    # side = int(math.sqrt(len(image_array)))
-    # img_matrix = np.reshape(image_array, (side, side))
-    # # print(img_matrix)
-    # image = im.fromarray(img_matrix, 'L')
-    # image.show()
-    # cv.waitKey(0)
-    # image.save('reconstructed_before.png')
-    # from matplotlib import pyplot as plt
-    # plt.imshow(img_matrix, interpolation='nearest')
-    # plt.show()
+
+    print(image_array)
 
     return image_array    
 
 
 def printKthBit(n, k):
+ 
     return((n & (1 << (k - 1))) >> (k - 1))
-
 
 def Significance(coeffs,start_index, lambda_, T):
     # print(f'Significance Call')
@@ -108,6 +120,7 @@ def Pscan(coeffs, start_index, T, b):
                     file.write(output)
                 output = ''
 
+
     return start_index + 4
 
 
@@ -163,10 +176,9 @@ output = ''
 def main():
     lower_bound = 0  # Adjust the lower bound as needed
     upper_bound = 255 # Adjust the upper bound as needed
-    image = cv.imread('cameraman.png')
-    coeffs = image_to_array(image)
+    image = image_capture()
+    coeffs = image_to_matrice(image)
 
-    np.save('image_coeff_arr', coeffs)
 
     with open('coeff.txt', 'w') as file:
         file.write(str(coeffs))
@@ -174,7 +186,7 @@ def main():
     Npix = len(coeffs)
     # print(Npix)
 
-    L = 4
+    L = 3
     lambda_root = Npix//4**L
 
     print(f'Coeffs: {coeffs}')
@@ -190,6 +202,8 @@ def main():
     byte = ''
     
     open('output.txt', 'w').close()
+
+
 
     #print(output)
     
